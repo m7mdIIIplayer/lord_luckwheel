@@ -1,242 +1,228 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>🎡 عجلة الحظ | LORD</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cairo:wght@700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>🎡 عجلة الحظ | LORD</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
 
-  <style>
-    :root {
-      --gold: #FFD700;
-      --gold-glow: #ffbf00;
-      --blue1: #1e3a8a;
-      --blue2: #0a1a4f;
-      --blue-border: #0f172a;
-    }
+<style>
+  body {
+    margin: 0;
+    font-family: "Cairo", sans-serif;
+    background: #001026;
+    color: #fff;
+    text-align: center;
+    overflow: hidden;
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; overflow: hidden; }
+  #logo {
+    font-size: 32px;
+    color:#FFD700;
+    margin-top: 10px;
+    text-shadow: 0 0 10px #ffd700;
+  }
 
-    body {
-      font-family: "Cairo", sans-serif;
-      background-image: url("./luckback.jpg");
-      background-position: center;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
+  h2 {
+    margin: 5px 0;
+  }
 
-    #logo {
-      font-family: 'Bebas Neue', cursive;
-      font-size: clamp(30px, 6vw, 42px);
-      letter-spacing: 4px;
-      color: var(--gold);
-      text-shadow: 0 0 15px var(--gold-glow), 0 0 40px #ff8000;
-      animation: glow 2s infinite alternate;
-    }
+  #wheel-container {
+    margin: 0 auto;
+    width: 300px;
+    height: 300px;
+    position: relative;
+  }
 
-    @keyframes glow {
-      from { text-shadow: 0 0 15px var(--gold-glow), 0 0 30px #ff8000; }
-      to { text-shadow: 0 0 25px #ffcc33, 0 0 50px #ffaa00; }
-    }
+  canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 12px solid #FFD700; /* gold border */
+    transition: transform 4s cubic-bezier(0.33,1,0.68,1);
+  }
 
-    h2 {
-      color: #fff;
-      text-shadow: 0 0 10px var(--gold);
-      font-size: clamp(18px, 4.5vw, 24px);
-      margin-bottom: 15px;
-    }
+  #pointer {
+    position: absolute;
+    top: 50%;
+    right: -10px;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    background: #0a47bb;
+    border-radius: 50%;
+    border: 2px solid #003;
+  }
 
-    #wheel-container {
-      position: relative;
-      width: min(90vw, 70vh);
-      height: min(90vw, 70vh);
-      max-width: 420px;
-      max-height: 420px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #00101f, #000);
-      box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: visible;
-    }
+  #pointer::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -12px;
+    transform: translateY(-50%);
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 12px solid #0a47bb;
+  }
 
-    #pointer {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      transform: translate(50%, -50%);
-      width: 22px;
-      height: 22px;
-      background: linear-gradient(145deg, #1e3a8a, #0a1a4f);
-      border-radius: 50%;
-      border: 2px solid #0f172a;
-      z-index: 9999;
-    }
+  /* SPIN BUTTON */
+  #spin-btn {
+    margin-top: 20px;
+    width: 180px;
+    padding: 12px;
+    font-size: 20px;
+    background: linear-gradient(45deg,#0a47bb,#5ea8ff);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 0 12px #5ea8ff;
+  }
 
-    #pointer::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: -13px;
-      transform: translateY(-50%);
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-      border-right: 14px solid #1e3a8a;
-    }
+  #spin-btn:active {
+    transform: scale(0.96);
+  }
 
-    canvas {
-      position: absolute;
-      inset: 0;
-      margin: auto;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 10px solid var(--gold);
-      transition: transform 6s cubic-bezier(0.33, 1, 0.68, 1);
-    }
+  #result {
+    margin-top: 18px;
+    font-size: 22px;
+    color: #FFD700;
+    text-shadow: 0 0 8px #ffaa00;
+  }
 
-    #result {
-      font-size: clamp(18px, 5vw, 22px);
-      font-weight: bold;
-      color: var(--gold);
-      text-shadow: 0 0 15px var(--gold-glow);
-      margin-top: 18px;
-    }
+  /* Falling coins animation */
+  .coin {
+    position: fixed;
+    top: -50px;
+    width: 30px;
+    height: 30px;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/217/217853.png');
+    background-size: cover;
+    animation: fall linear forwards;
+  }
 
-    /* زر البدء الشفاف */
-    #start-btn {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      z-index: 999999;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
+  @keyframes fall {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(120vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* Screen shake */
+  .shake {
+    animation: shakeAnim 0.4s ease-in-out;
+  }
+
+  @keyframes shakeAnim {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+    100% { transform: translateX(0); }
+  }
+</style>
 </head>
 
 <body>
 
-  <button id="start-btn"></button>
+<div id="logo">LORD BOT</div>
+<h2>🎰 عجلة الحظ الذهبية</h2>
 
-  <div id="logo">LORD BOT</div>
-  <h2>🎰 عجلة الحظ الذهبية</h2>
+<div id="wheel-container">
+  <div id="pointer"></div>
+  <canvas id="wheel"></canvas>
+</div>
 
-  <div id="wheel-container">
-    <div id="pointer"></div>
-    <canvas id="canvas"></canvas>
-  </div>
+<button id="spin-btn">🎡 SPIN</button>
 
-  <div id="result">جاري التهيئة...</div>
+<div id="result"></div>
 
-  <!-- الأصوات -->
-  <audio id="spin-sound" src="spin.mp3"></audio>
-  <audio id="win-sound" src="win.mp3"></audio>
-  <audio id="lose-sound" src="lose.mp3"></audio>
+<!-- SOUNDS -->
+<audio id="spin-sound" src="spin.mp3"></audio>
+<audio id="win-sound" src="win.mp3"></audio>
+<audio id="lose-sound" src="lose.mp3"></audio>
 
-  <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) tg.expand();
+<script>
+const prizes = ["حظ أوفر","5,000","10,000","15,000","25,000","100,000","250,000","1M","5M","10M"];
+const colors = ["#ffffff","#0a47bb"]; // white + blue
 
-    // العجلة
-    const prizes = ["حظ أوفر","5,000","10,000","15,000","25,000","100,000","250,000","1M","5M","10M"];
-    const colors = ["#f1c40f","#2ecc71","#3498db","#9b59b6","#e67e22","#1abc9c","#e74c3c","#16a085","#f39c12","#2980b9"];
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    const container = document.getElementById("wheel-container");
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+canvas.width = 300;
+canvas.height = 300;
 
-    function sizeCanvas() {
-      const s = Math.min(container.clientWidth, container.clientHeight);
-      canvas.width = s;
-      canvas.height = s;
-      drawWheel();
+function drawWheel() {
+  const r = canvas.width / 2;
+  const arc = (2*Math.PI) / prizes.length;
+
+  for (let i=0; i<prizes.length; i++) {
+    const angle = i * arc;
+    ctx.beginPath();
+    ctx.fillStyle = colors[i % 2];
+    ctx.moveTo(r,r);
+    ctx.arc(r,r,r,angle,angle+arc);
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(r,r);
+    ctx.rotate(angle + arc/2);
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 14px Cairo";
+    ctx.textAlign = "right";
+    ctx.fillText(prizes[i], r-10,5);
+    ctx.restore();
+  }
+}
+drawWheel();
+
+const spinBtn = document.getElementById("spin-btn");
+const resultDiv = document.getElementById("result");
+
+const spinSound = document.getElementById("spin-sound");
+const winSound  = document.getElementById("win-sound");
+const loseSound = document.getElementById("lose-sound");
+
+function dropCoins() {
+  for (let i = 0; i < 20; i++) {
+    const coin = document.createElement("div");
+    coin.className = "coin";
+    coin.style.left = Math.random() * 100 + "vw";
+    coin.style.animationDuration = 1 + Math.random()*1.5 + "s";
+    document.body.appendChild(coin);
+
+    setTimeout(() => coin.remove(), 2500);
+  }
+}
+
+spinBtn.addEventListener("click", () => {
+  spinBtn.disabled = true;
+
+  const prizeIndex = Math.floor(Math.random() * prizes.length);
+
+  const rotation = 360 * 5 + (360 - (prizeIndex*(360/prizes.length)+(360/prizes.length)/2));
+  spinSound.play();
+  canvas.style.transform = `rotate(${rotation}deg)`;
+
+  // STOP AFTER EXACT 4 SECONDS
+  setTimeout(() => {
+    const win = prizeIndex !== 0;
+
+    document.body.classList.add("shake");
+    setTimeout(() => document.body.classList.remove("shake"), 500);
+
+    if (win) {
+      winSound.play();
+      dropCoins();
+      resultDiv.innerHTML = `🎉 مبروك! ربحت <b>${prizes[prizeIndex]}</b> 🪙`;
+    } else {
+      loseSound.play();
+      resultDiv.innerHTML = `😢 <b>حظ أوفر!</b>`;
     }
 
-    function drawWheel() {
-      const r = canvas.width / 2;
-      const arc = (2 * Math.PI) / prizes.length;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < prizes.length; i++) {
-        const angle = i * arc;
-        ctx.beginPath();
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.moveTo(r, r);
-        ctx.arc(r, r, r, angle, angle + arc);
-        ctx.fill();
-        ctx.save();
-        ctx.translate(r, r);
-        ctx.rotate(angle + arc / 2);
-        ctx.fillStyle = "#fff";
-        ctx.font = `${Math.max(12, Math.floor(r * 0.06))}px Cairo`;
-        ctx.textAlign = "right";
-        ctx.fillText(prizes[i], r - Math.max(14, Math.floor(r * 0.04)), 5);
-        ctx.restore();
-      }
-    }
-
-    window.addEventListener('resize', sizeCanvas);
-    sizeCanvas();
-
-    const resultDiv = document.getElementById("result");
-    const params = new URLSearchParams(location.search);
-    const result = params.get("result") || "0";
-
-    const getPrizeIndex = (res) => {
-      switch (res) {
-        case "0": return 0;
-        case "5000": return 1;
-        case "10000": return 2;
-        case "15000": return 3;
-        case "25000": return 4;
-        case "100000": return 5;
-        case "250000": return 6;
-        default: return 0;
-      }
-    };
-
-    const prizeIndex = getPrizeIndex(result);
-
-    // الأصوات
-    const spinSound = document.getElementById("spin-sound");
-    const winSound = document.getElementById("win-sound");
-    const loseSound = document.getElementById("lose-sound");
-
-    const sliceDeg = 360 / prizes.length;
-    const stopAngle = (360 - (prizeIndex * sliceDeg + sliceDeg / 2)) % 360;
-    const finalRotation = 360 * 5 + stopAngle;
-
-    // زر البدء
-    const startBtn = document.getElementById("start-btn");
-
-    startBtn.addEventListener("click", () => {
-      startBtn.style.display = "none"; // يختفي الزر
-
-      spinSound.play();
-      canvas.style.transform = `rotate(${finalRotation}deg)`;
-
-      setTimeout(() => {
-        if (prizeIndex === 0) {
-          loseSound.play();
-          resultDiv.innerHTML = `😢 <b>حظ أوفر!</b> حاول مرة أخرى.`;
-        } else {
-          winSound.play();
-          resultDiv.innerHTML = `🎉 مبروك! ربحت <b>${prizes[prizeIndex]}</b> 🏆`;
-        }
-      }, 6000);
-    });
-  </script>
+    spinBtn.disabled = false;
+  }, 4000);
+});
+</script>
 
 </body>
 </html>
